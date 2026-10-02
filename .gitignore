@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+.idea/
+App_Data/
+wwwroot/uploads/
+*.db
+*.db-shm
+*.db-wal
+*.user

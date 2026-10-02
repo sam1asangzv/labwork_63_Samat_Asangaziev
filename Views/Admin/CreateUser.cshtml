@@ -1,0 +1,3 @@
+@model MyChat.Models.RegisterViewModel
+@{ ViewData["Title"] = "Создание пользователя"; }
+<section class="auth-card wide"><h1>Новый пользователь</h1><div asp-validation-summary="All" class="validation"></div><form method="post" class="form-stack">@Html.AntiForgeryToken()<label>Username<input asp-for="UserName"></label><label>Email<input asp-for="Email"></label><label>Дата рождения<input asp-for="BirthDate" type="date"></label><label>Пароль<span class="password-wrap"><input asp-for="Password"><button type="button" class="password-toggle">◉</button></span></label><label>Роль<select name="role"><option value="user">user</option><option value="admin">admin</option></select></label><button class="btn-primary-chat">Создать</button></form></section>

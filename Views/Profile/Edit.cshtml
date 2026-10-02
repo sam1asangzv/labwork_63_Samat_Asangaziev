@@ -1,0 +1,3 @@
+@model MyChat.Models.EditProfileViewModel
+@{ ViewData["Title"] = "Редактирование профиля"; }
+<section class="auth-card wide"><h1>Редактирование профиля</h1><div asp-validation-summary="ModelOnly" class="validation"></div><form method="post" enctype="multipart/form-data" class="form-stack">@Html.AntiForgeryToken()<label>Username<input asp-for="UserName"><span asp-validation-for="UserName"></span></label><label>Email<input asp-for="Email"><span asp-validation-for="Email"></span></label><label>Дата рождения<input asp-for="BirthDate" type="date"><span asp-validation-for="BirthDate"></span></label><label>Новый аватар<input asp-for="Avatar" type="file" accept="image/*"></label><button class="btn-primary-chat">Сохранить</button></form></section>

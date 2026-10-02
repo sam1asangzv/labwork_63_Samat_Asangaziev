@@ -1,0 +1,6 @@
+@model IEnumerable<MyChat.Models.ApplicationUser>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<MyChat.Models.ApplicationUser> UserManager
+@{ ViewData["Title"] = "Пользователи"; }
+<div class="section-heading"><div><h1>Пользователи</h1><p>Управление доступом и ролями</p></div><a class="btn-primary-chat inline" asp-action="CreateUser">Создать пользователя</a></div>
+<div class="user-list">@foreach(var user in Model){var roles=await UserManager.GetRolesAsync(user);<article><img src="@user.AvatarPath" alt=""><div><a asp-controller="Profile" asp-action="Details" asp-route-id="@user.Id"><strong>@user.UserName</strong></a><p>@user.Email · @(user.IsBlocked ? "Заблокирован" : "Активен")</p></div><form asp-action="ChangeRole" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@user.Id"><select name="role"><option value="user" selected="@(roles.Contains("user"))">user</option><option value="admin" selected="@(roles.Contains("admin"))">admin</option></select><button>Изменить роль</button></form>@if(!roles.Contains("admin")){<form asp-action="ToggleBlock" method="post">@Html.AntiForgeryToken()<input type="hidden" name="id" value="@user.Id"><button class="danger">@(user.IsBlocked ? "Разблокировать" : "Заблокировать")</button></form>}</article>}</div>

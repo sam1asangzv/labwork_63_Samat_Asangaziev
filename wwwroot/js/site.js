@@ -1,0 +1,12 @@
+document.querySelectorAll(".password-toggle").forEach(button=>button.addEventListener("click",()=>{const input=button.parentElement.querySelector("input");const show=input.type==="password";input.type=show?"text":"password";button.setAttribute("aria-label",show?"Скрыть пароль":"Показать пароль")}));
+
+const chat=document.querySelector("[data-chat]");
+if(chat){
+  const box=document.querySelector("#messages"),form=document.querySelector("#messageForm"),text=document.querySelector("#messageText"),count=document.querySelector("#charCount"),error=document.querySelector("#chatError");
+  const esc=value=>{const span=document.createElement("span");span.textContent=value??"";return span.innerHTML};
+  async function loadMessages(scroll=false){const response=await fetch(chat.dataset.messagesUrl,{headers:{"X-Requested-With":"XMLHttpRequest"}});if(!response.ok)return;const messages=await response.json();box.innerHTML=messages.map(m=>`<article class="message ${m.mine?"mine":""}" data-message-id="${m.id}"><img src="${esc(m.avatar)}" alt=""><div class="bubble"><div class="message-meta"><a href="/Profile/Details/${encodeURIComponent(m.userId)}">${esc(m.username)}</a><time>${esc(m.sentAt)}</time>${chat.dataset.isAdmin==="true"?`<button class="delete-message" data-delete-message="${m.id}" type="button">Удалить</button>`:""}</div><p>${esc(m.text)}</p></div></article>`).join("")||'<p class="loading">Сообщений пока нет.</p>';if(scroll)box.scrollTop=box.scrollHeight}
+  text.addEventListener("input",()=>count.textContent=`${text.value.length} / 150`);
+  form.addEventListener("submit",async event=>{event.preventDefault();error.textContent="";const response=await fetch(chat.dataset.sendUrl,{method:"POST",body:new FormData(form),headers:{"X-Requested-With":"XMLHttpRequest"}});if(!response.ok){const data=await response.json().catch(()=>({}));error.textContent=data.message||"Не удалось отправить сообщение.";return}text.value="";count.textContent="0 / 150";await loadMessages(true)});
+  box.addEventListener("click",async event=>{const button=event.target.closest("[data-delete-message]");if(!button||!confirm("Удалить сообщение?"))return;const token=form.querySelector('[name="__RequestVerificationToken"]').value;const body=new FormData();body.append("__RequestVerificationToken",token);await fetch(`${chat.dataset.deleteUrl}/${button.dataset.deleteMessage}`,{method:"POST",body});await loadMessages()});
+  loadMessages(true);setInterval(()=>loadMessages(),5000);
+}
